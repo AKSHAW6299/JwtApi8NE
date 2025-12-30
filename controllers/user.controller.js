@@ -37,9 +37,9 @@ export const registerUser = async (req, res) => {
     // Store refresh token in HTTP-only cookie [server]
     // Nobody can access this cookies from frontend
     res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
+      httpOnly: true,                                    // only server can access, js cannot access
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "none",                                 // cross-domain allowed
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
 
@@ -106,7 +106,7 @@ export const loginUser = async (req, res) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000,
     });
 
@@ -135,7 +135,7 @@ export const loginUser = async (req, res) => {
 export const refreshAccessToken = async (req, res) => {
   try {
     // Read refresh token from HTTP-only cookie
-    const { refreshToken } = req.cookies.refreshToken
+    const  refreshToken  = req.cookies.refreshToken
 
     if (!refreshToken) {
       return res.status(401).json({
@@ -202,7 +202,7 @@ export const logoutUser = async (req, res) => {
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "none",
     });
 
     res.status(200).json({
